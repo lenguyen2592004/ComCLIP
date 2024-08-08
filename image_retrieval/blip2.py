@@ -1,5 +1,7 @@
 from helper_function import *
 import pandas as pd
+import faiss
+import numpy as np
 import torch
 import clip
 import argparse
@@ -66,6 +68,7 @@ def comclip_one_pair(row_id, caption, image_id):
                 object_images[word] = relation_image
 
     ##subimages
+    # Create image embeddings array
     image_embeds = []
     image_scores = []
     for key, sub_image in object_images.items():
@@ -73,8 +76,14 @@ def comclip_one_pair(row_id, caption, image_id):
             key = key.replace("_dup", "")
         image_embed, image_score = subimage_score_embedding(sub_image, key)
         if image_embed is not None and image_score is not None:
-            image_embeds.append(image_embed)
+            # Append image features to image_embeds
+            image_input = model.get_image_features(**image_inputs).cuda(device)
+            image_embeds = np.append(image_embeds, image_input.cpu().numpy(), axis=0)
             image_scores.append(image_score)
+    image_embed_dim = image_embeds.ndim
+    index = faiss.IndexFlatL2(image_embed_dim)
+    # Thêm tất cả các embedding vào index
+    index.add(image_embeds)
     #regularize the scores
     similarity = normalize_tensor_list(image_scores)
     for score, image in zip(similarity, image_embeds):
