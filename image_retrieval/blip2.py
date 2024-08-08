@@ -48,12 +48,13 @@ def subimage_score_embedding(image, text):
         return None, None
     
 def comclip_one_pair(row_id, caption, image_id):
-    image = preprocess(read_image(image_id, IMAGE_PATH))
-    text_input = clip.tokenize(caption).cuda(device)
-    image_input = torch.tensor(np.stack([image])).cuda(device)
+    image_inputs = processor(images=image, return_tensors="pt")
+    image_input = model.get_image_features(**image_inputs).cuda(device)
+    text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
+    text_input= = model.get_text_features(**text_inputs).cuda(device)
     with torch.no_grad():
-        original_image_embed = model.encode_image(image_input).float()
-        original_text_embed = model.encode_text(text_input).float()
+        original_image_embed = image_input.float()
+        original_text_embed =  text_input.float()
     text_json = get_sentence_json(row_id, TEXT_JSON_PATH)
     object_images, key_map = create_sub_image_obj(row_id, image_id, IMAGE_PATH, TEXT_JSON_PATH, DENSE_CAPTION_PAYTH)
     relation_images, relation_words = create_relation_object(object_images, text_json, image_id, key_map, IMAGE_PATH)
