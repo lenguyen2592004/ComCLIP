@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 import clip
 import argparse
+from transformers import BLIP2Processor, BLIP2Model
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type = str, help="csv file for the flickr30k")
 parser.add_argument("--model", type=str, help="RN50, ViT/B-32, ViT/L-14")
