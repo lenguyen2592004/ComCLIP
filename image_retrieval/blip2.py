@@ -35,7 +35,7 @@ def subimage_score_embedding(image, text):
         image_inputs = processor(images=image, return_tensors="pt")
         image_input = model.get_image_features(**image_inputs).cuda(device)
         text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
-        text_input= = model.get_text_features(**text_inputs).cuda(device)
+        text_input = model.get_text_features(**text_inputs).cuda(device)
         with torch.no_grad():
             original_image_embed = image_input.float()
             original_text_embed =  text_input.float()
@@ -51,7 +51,7 @@ def comclip_one_pair(row_id, caption, image_id):
     image_inputs = processor(images=image, return_tensors="pt")
     image_input = model.get_image_features(**image_inputs).cuda(device)
     text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
-    text_input= = model.get_text_features(**text_inputs).cuda(device)
+    text_input = model.get_text_features(**text_inputs).cuda(device)
     with torch.no_grad():
         original_image_embed = image_input.float()
         original_text_embed =  text_input.float()
