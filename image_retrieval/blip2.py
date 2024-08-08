@@ -78,7 +78,7 @@ def comclip_one_pair(row_id, caption, image_id):
         if image_embed is not None and image_score is not None:
             # Append image features to image_embeds
             image_input = model.get_image_features(**image_inputs).cuda(device)
-            image_embeds = np.append(image_embeds, image_input.cpu().numpy(), axis=0)
+            image_embeds = np.append(image_embed, image_input.cpu().numpy(), axis=0)
             image_scores.append(image_score)
     image_embed_dim = image_embeds.ndim
     index = faiss.IndexFlatL2(image_embed_dim)
@@ -86,7 +86,7 @@ def comclip_one_pair(row_id, caption, image_id):
     index.add(image_embeds)
     #regularize the scores
     similarity = normalize_tensor_list(image_scores)
-    for score, image in zip(similarity, image_embeds):
+    for score, image in zip(similarity, index):
         original_image_embed += score * image
     image_features = original_image_embed / original_image_embed.norm(dim=-1, keepdim=True).float()
     text_features = original_text_embed /original_text_embed.norm(dim=-1, keepdim=True).float()
