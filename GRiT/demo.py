@@ -83,10 +83,8 @@ def get_parser():
     return parser
 def extract_features_with_blip2(image):
     processor = Blip2Processor.from_pretrained("Salesforce/blip2-flan-t5-xl")
-    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xl")   
-
-
-    inputs = processor(images=image, return_tensors="pt")
+    model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-flan-t5-xl")
+    inputs = processor(images=image, return_tensors='pt')
     outputs = model.generate(**inputs)
     text_description = processor.decode(outputs[0], skip_special_tokens=True)
 
