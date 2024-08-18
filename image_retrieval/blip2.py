@@ -49,7 +49,7 @@ def subimage_score_embedding(image, text):
     else:
         return None, None
     
-def comclip_one_pair(row_id, caption, image_id):
+def blip2_one_pair(row_id, caption, image_id):
     image_inputs = processor(images=image, return_tensors="pt")
     image_input = model.get_image_features(**image_inputs).cuda(device)
     text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
