@@ -1,5 +1,7 @@
 from helper_function import *
 import pandas as pd
+import faiss
+import numpy as np
 import torch
 import clip
 import argparse
@@ -35,7 +37,7 @@ def subimage_score_embedding(image, text):
         image_inputs = processor(images=image, return_tensors="pt")
         image_input = model.get_image_features(**image_inputs).cuda(device)
         text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
-        text_input= = model.get_text_features(**text_inputs).cuda(device)
+        text_input = model.get_text_features(**text_inputs).cuda(device)
         with torch.no_grad():
             original_image_embed = image_input.float()
             original_text_embed =  text_input.float()
@@ -48,12 +50,13 @@ def subimage_score_embedding(image, text):
         return None, None
     
 def comclip_one_pair(row_id, caption, image_id):
-    image = preprocess(read_image(image_id, IMAGE_PATH))
-    text_input = clip.tokenize(caption).cuda(device)
-    image_input = torch.tensor(np.stack([image])).cuda(device)
+    image_inputs = processor(images=image, return_tensors="pt")
+    image_input = model.get_image_features(**image_inputs).cuda(device)
+    text_inputs = tokenizer(caption, padding=True, return_tensors="pt")
+    text_input = model.get_text_features(**text_inputs).cuda(device)
     with torch.no_grad():
-        original_image_embed = model.encode_image(image_input).float()
-        original_text_embed = model.encode_text(text_input).float()
+        original_image_embed = image_input.float()
+        original_text_embed =  text_input.float()
     text_json = get_sentence_json(row_id, TEXT_JSON_PATH)
     object_images, key_map = create_sub_image_obj(row_id, image_id, IMAGE_PATH, TEXT_JSON_PATH, DENSE_CAPTION_PAYTH)
     relation_images, relation_words = create_relation_object(object_images, text_json, image_id, key_map, IMAGE_PATH)
@@ -65,6 +68,7 @@ def comclip_one_pair(row_id, caption, image_id):
                 object_images[word] = relation_image
 
     ##subimages
+    # Create image embeddings array
     image_embeds = []
     image_scores = []
     for key, sub_image in object_images.items():
@@ -72,11 +76,17 @@ def comclip_one_pair(row_id, caption, image_id):
             key = key.replace("_dup", "")
         image_embed, image_score = subimage_score_embedding(sub_image, key)
         if image_embed is not None and image_score is not None:
-            image_embeds.append(image_embed)
+            # Append image features to image_embeds
+            image_input = model.get_image_features(**image_inputs).cuda(device)
+            image_embeds = np.append(image_embed, image_input.cpu().numpy(), axis=0)
             image_scores.append(image_score)
+    image_embed_dim = image_embeds.ndim
+    index = faiss.IndexFlatL2(image_embed_dim)
+    # Thêm tất cả các embedding vào index
+    index.add(image_embeds)
     #regularize the scores
     similarity = normalize_tensor_list(image_scores)
-    for score, image in zip(similarity, image_embeds):
+    for score, image in zip(similarity, index):
         original_image_embed += score * image
     image_features = original_image_embed / original_image_embed.norm(dim=-1, keepdim=True).float()
     text_features = original_text_embed /original_text_embed.norm(dim=-1, keepdim=True).float()
