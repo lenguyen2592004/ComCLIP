@@ -118,9 +118,7 @@ def process_image(cfg, img_path, output_dir):
             if name not in json_file:
                 json_file[name] = [box.tolist()]
             else:
-                json_file[name].append(box.tolist())   
-
-
+                json_file[name].append(box.tolist())
         out_filename = os.path.join(output_dir, os.path.splitext(os.path.basename(img_path))[0] + ".json")
         with open(out_filename, "w") as outfile:
             json.dump(json_file, outfile)
@@ -128,7 +126,7 @@ def process_image(cfg, img_path, output_dir):
         cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
         cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
         if cv2.waitKey(0) == 27:
-            cv2.destroyAllWindows()   
+            cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     mp.set_start_method("spawn", force=True)
