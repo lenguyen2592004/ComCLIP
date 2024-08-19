@@ -14,11 +14,10 @@ parser.add_argument("--dense_caption_path", type=str, help="path to densecaption
 parser.add_argument("--model", type=str)
 args = parser.parse_args()
 
-device = "cuda:0"
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 data = pd.read_pickle(args.dataset) ### Flickr30k or MSCOCO test set
-preprocess= BLIP2Processor.from_pretrained(args.model,device='cpu')
-model = BLIP2Model.from_pretrained(args.model,device='cpu')
-#model, preprocess = clip.load("RN50", device='cpu')
+preprocess= BLIP2Processor.from_pretrained(args.model,device=device)
+model = BLIP2Model.from_pretrained(args.model,device=device)
 model.cuda(device).eval()
 IMAGE_PATH = args.image_path + "{}.jpg"
 TEXT_JSON_PATH = args.text_relation_path + "/{}.json"
