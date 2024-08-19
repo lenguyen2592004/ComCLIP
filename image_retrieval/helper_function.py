@@ -1,6 +1,8 @@
 import json
 from PIL import Image, ImageDraw
 import numpy as np
+import torch
+from transformers import BLIP2Processor, BLIP2Model
 
 MATCHIN_JSON_PATH = "matched_relation/row_{}_image_{}.json"
 
@@ -45,7 +47,11 @@ def create_sub_image_obj(row_id, image_id, image_path, relation_path, dense_capt
     image = Image.open(image_path.format(image_id))
     attributes = open(relation_path.format(row_id))
     attributes = json.loads(json.load(attributes))["objects"]
-    location = json.load(open(dense_caption_path.format(image_id)))
+    blip_model=BLIP2Model()
+    # Use BLIP-2 to generate dense captions or features
+    blip_output = blip_model.generate(image)
+    location = blip_output['locations']  # Assume BLIP-2 output includes object locations
+    #location = json.load(open(dense_caption_path.format(image_id)))
     for key, object_name in matched_objects.items():
         if key in attributes and "attributes" in attributes[key]:
             key_name = key
