@@ -2,9 +2,12 @@ import json
 from PIL import Image, ImageDraw
 import numpy as np
 import torch
-from transformers import BLIP2Processor, BLIP2Model
+from transformers import Blip2Processor, Blip2Model
 
 MATCHIN_JSON_PATH = "matched_relation/row_{}_image_{}.json"
+# Initialize BLIP-2 processor and model
+processor = Blip2Processor.from_pretrained("Salesforce/blip2-large")
+model = Blip2Model.from_pretrained("Salesforce/blip2-large")
 
 
 def read_image(id, image_path):
@@ -47,9 +50,10 @@ def create_sub_image_obj(row_id, image_id, image_path, relation_path, dense_capt
     image = Image.open(image_path.format(image_id))
     attributes = open(relation_path.format(row_id))
     attributes = json.loads(json.load(attributes))["objects"]
-    blip_model=BLIP2Model()
-    # Use BLIP-2 to generate dense captions or features
-    blip_output = blip_model.generate(image)
+    inputs = processor(images=image, return_tensors="pt").to(device)
+    # Generate image embeddings using BLIP-2
+    with torch.no_grad():
+        blip_output = model(**inputs)
     location = blip_output['locations']  # Assume BLIP-2 output includes object locations
     #location = json.load(open(dense_caption_path.format(image_id)))
     for key, object_name in matched_objects.items():
