@@ -16,8 +16,8 @@ args = parser.parse_args()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 data = pd.read_pickle(args.dataset) ### Flickr30k or MSCOCO test set
-preprocess= BLIP2Processor.from_pretrained(args.model,device=device)
-model = BLIP2Model.from_pretrained(args.model,device=device)
+preprocess= Blip2Processor.from_pretrained(args.model,device=device)
+model = Blip2Model.from_pretrained(args.model,device=device)
 model.cuda(device).eval()
 IMAGE_PATH = args.image_path + "{}.jpg"
 TEXT_JSON_PATH = args.text_relation_path + "/{}.json"
