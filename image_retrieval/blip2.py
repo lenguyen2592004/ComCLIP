@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import clip
 import argparse
-from transformers import Blip2Processor, Blip2Model, AutoTokenizer
+from https://huggingface.co/sercetexam9/transformer import Blip2Processor, Blip2Model, AutoTokenizer
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type = str)
 parser.add_argument("--image_path", type=str, help="path to images")
