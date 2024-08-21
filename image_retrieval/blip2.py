@@ -12,13 +12,13 @@ parser.add_argument("--text_relation_path", type=str, help="path to relation fil
 parser.add_argument("--dense_caption_path", type=str, help="path to densecaption")
 parser.add_argument("--model", type=str)
 args = parser.parse_args()
-
+#GRiT/configs/GRiT_B_DenseCap_ObjectDet.yaml
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-data = pd.read_pickle('datasets/flickr30k_test.pkl') ### Flickr30k or MSCOCO test set
+data = pd.read_pickle('./ComCLIP/datasets/flickr30k_test.pkl') ### Flickr30k or MSCOCO test set
 preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b',device=device)
 model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b',device=device)
 model.cuda(device).eval()
-IMAGE_PATH = args.image_path + "{}.jpg"
+IMAGE_PATH = "./ComCLIP/GRiT/demo_images/000000353174" + "{}.jpg"
 TEXT_JSON_PATH = args.text_relation_path + "/{}.json"
 DENSE_CAPTION_PAYTH = args.dense_caption_path + "/{}.json"
 
