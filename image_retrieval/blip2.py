@@ -104,7 +104,8 @@ if __name__ == "__main__":
     comclip_score = {}
     for idx, row in data.iterrows():
         try:
-            comclip_score[idx] = get_score(idx)
+            comclip_score[idx] = create_sub_image_obj(idx)
+            print("Anh thu {}:,".format(idx,comclip_score[idx]))
         except Exception as e:
             print(e)
     top_1 = 0
