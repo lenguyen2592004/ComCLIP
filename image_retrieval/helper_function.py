@@ -6,8 +6,8 @@ from transformers import Blip2Processor, Blip2Model
 
 MATCHIN_JSON_PATH = "matched_relation/row_{}_image_{}.json"
 # Initialize BLIP-2 processor and model
-processor = Blip2Processor.from_pretrained("Salesforce/blip2-large")
-model = Blip2Model.from_pretrained("Salesforce/blip2-large")
+processor = Blip2Processor.from_pretrained("Salesforce/blip2-opt-2.7b")
+model = Blip2Model.from_pretrained("Salesforce/blip2-opt-2.7b")
 
 
 def read_image(id, image_path):
