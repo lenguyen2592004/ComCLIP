@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import clip
 import argparse
-from https://huggingface.co/sercetexam9/transformer import Blip2Processor, Blip2Model, AutoTokenizer
+from transformers import Blip2Processor, Blip2Model, AutoTokenizer
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type = str)
 parser.add_argument("--image_path", type=str, help="path to images")
@@ -97,7 +97,7 @@ def get_score(row_id):
     row = data.iloc[row_id]
     candidates = row.clip_top_ten_pick
     for candidate in candidates:
-        result[candidate[0]] = comclip_one_pair(row_id, row.sentence, candidate[0]).item()
+        result[candidate[0]] = blip2_one_pair(row_id, row.sentence, candidate[0]).item()
     result = dict(sorted(result.items(), key=lambda x: x[1], reverse=True))
     return result
 
@@ -113,8 +113,10 @@ if __name__ == "__main__":
     for idx, value in comclip_score.items():
         candidates = list(value.keys())
         candidates = [int(i) for i in candidates]
-        if candidates[0] == int(idx):
-            top_1 += 1
-        if int(idx) in candidates[:5]:
-            top_5 += 1
+        tp1=index.search(comclip_score,k=1)
+        tp5=index.search(comclip_score,k=5)
+        if int(idx) in tp1:
+            top_1+=1
+        if int(idx) in tp5:
+            top_5+=1
     print("Top 1 score: {}. Top 5 score: {}".format(top_1/ 1000, top_5/ 1000))
