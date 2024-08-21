@@ -48,14 +48,14 @@ def create_sub_image_obj(row_id, image_id, image_path, relation_path, dense_capt
     old_key_to_new_key = {}
     matched_objects = get_matching(row_id, image_id)
     image = Image.open(image_path.format(image_id))
-    attributes = open(relation_path.format(row_id))
-    attributes = json.loads(json.load(attributes))["objects"]
+    #attributes = open(relation_path.format(row_id))
+    #attributes = json.loads(json.load(attributes))["objects"]
     inputs = processor(images=image, return_tensors="pt").to(device)
     # Generate image embeddings using BLIP-2
     with torch.no_grad():
         blip_output = model(**inputs)
     location = blip_output['locations']  # Assume BLIP-2 output includes object locations
-    #location = json.load(open(dense_caption_path.format(image_id)))
+    location = json.load(open(dense_caption_path.format(image_id)))
     for key, object_name in matched_objects.items():
         if key in attributes and "attributes" in attributes[key]:
             key_name = key
