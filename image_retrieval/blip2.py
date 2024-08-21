@@ -4,6 +4,8 @@ import faiss
 import numpy as np
 import torch
 import argparse
+import os
+from PIL import Image
 from transformers import Blip2Processor, Blip2Model, AutoTokenizer
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type = str)
@@ -13,8 +15,19 @@ parser.add_argument("--dense_caption_path", type=str, help="path to densecaption
 parser.add_argument("--model", type=str)
 args = parser.parse_args()
 #GRiT/configs/GRiT_B_DenseCap_ObjectDet.yaml
+def read_jpg_files(folder_path):
+    image_files = [f for f in os.listdir(folder_path) if f.endswith('.jpg')]
+    images = []
+    for file in image_files:
+        image_path = os.path.join(folder_path, file)
+        image = Image.open(image_path)
+        images.append(image)
+    return images
+
+folder_path = './ComCLIP/datasets/L02_V001'
+data = read_jpg_files(folder_path)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-data = pd.read_pickle('./ComCLIP/datasets/L02_V001') ### Flickr30k or MSCOCO test set
+#data = pd.read_pickle('./ComCLIP/datasets/L02_V001') ### Flickr30k or MSCOCO test set
 preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b')
 model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b')
 model.eval()
