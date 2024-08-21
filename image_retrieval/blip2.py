@@ -18,7 +18,7 @@ data = pd.read_pickle('./ComCLIP/datasets/L02_V001') ### Flickr30k or MSCOCO tes
 preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b')
 model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b')
 model.eval()
-IMAGE_PATH = "./ComCLIP/GRiT/demo_images/000000353174" + "{}.jpg"
+IMAGE_PATH = "./ComCLIP/datasets/L02_V001/0001" + "{}.jpg"
 TEXT_JSON_PATH = "" + "/{}.json"
 DENSE_CAPTION_PAYTH = "" + "/{}.json"
 
