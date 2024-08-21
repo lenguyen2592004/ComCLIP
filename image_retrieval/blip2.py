@@ -115,21 +115,21 @@ def get_score(row_id):
 
 if __name__ == "__main__":
     comclip_score = {}
-    for idx, row in data.items():
+    for idx in range(0,len(data)):
         try:
             comclip_score[idx] = create_sub_image_obj(idx)
             print("Anh thu {}:,".format(idx,comclip_score[idx]))
         except Exception as e:
             print(e)
-    top_1 = 0
-    top_5 = 0
-    for idx, value in comclip_score.items():
-        candidates = list(value.keys())
-        candidates = [int(i) for i in candidates]
-        tp1=index.search(comclip_score,k=1)
-        tp5=index.search(comclip_score,k=5)
-        if int(idx) in tp1:
-            top_1+=1
-        if int(idx) in tp5:
-            top_5+=1
-    print("Top 1 score: {}. Top 5 score: {}".format(top_1/ 1000, top_5/ 1000))
+    # top_1 = 0
+    # top_5 = 0
+    # for idx, value in comclip_score.items():
+    #     candidates = list(value.keys())
+    #     candidates = [int(i) for i in candidates]
+    #     tp1=index.search(comclip_score,k=1)
+    #     tp5=index.search(comclip_score,k=5)
+    #     if int(idx) in tp1:
+    #         top_1+=1
+    #     if int(idx) in tp5:
+    #         top_5+=1
+    # print("Top 1 score: {}. Top 5 score: {}".format(top_1/ 1000, top_5/ 1000))
