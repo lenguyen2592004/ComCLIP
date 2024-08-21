@@ -3,7 +3,6 @@ import pandas as pd
 import faiss
 import numpy as np
 import torch
-import clip
 import argparse
 from transformers import Blip2Processor, Blip2Model, AutoTokenizer
 parser = argparse.ArgumentParser()
