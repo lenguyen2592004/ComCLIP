@@ -19,8 +19,8 @@ preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b',device=de
 model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b',device=device)
 model.cuda(device).eval()
 IMAGE_PATH = "./ComCLIP/GRiT/demo_images/000000353174" + "{}.jpg"
-TEXT_JSON_PATH = args.text_relation_path + "/{}.json"
-DENSE_CAPTION_PAYTH = args.dense_caption_path + "/{}.json"
+TEXT_JSON_PATH = "" + "/{}.json"
+DENSE_CAPTION_PAYTH = "" + "/{}.json"
 
 def subimage_score_embedding(image, text):
     if text:
