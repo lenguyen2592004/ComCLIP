@@ -15,8 +15,8 @@ args = parser.parse_args()
 #GRiT/configs/GRiT_B_DenseCap_ObjectDet.yaml
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 data = pd.read_pickle('./ComCLIP/datasets/flickr30k_test.pkl') ### Flickr30k or MSCOCO test set
-preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b',device=device)
-model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b',device=device)
+preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b')
+model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b')
 model.cuda(device).eval()
 IMAGE_PATH = "./ComCLIP/GRiT/demo_images/000000353174" + "{}.jpg"
 TEXT_JSON_PATH = "" + "/{}.json"
