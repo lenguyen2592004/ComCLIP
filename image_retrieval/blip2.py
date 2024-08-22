@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import argparse
 import os
+import cv2
 from PIL import Image
 from transformers import Blip2Processor, Blip2Model, AutoTokenizer
 parser = argparse.ArgumentParser()
@@ -34,6 +35,9 @@ model.eval()
 IMAGE_PATH = "./ComCLIP/datasets/L02_V001/" + "{}.jpg"
 TEXT_JSON_PATH = "" + "/{}.json"
 DENSE_CAPTION_PAYTH = "" + "/{}.json"
+def save_image(image, filename):
+  """Saves an image to a file."""
+  image.save(filename)
 
 def subimage_score_embedding(image, text):
     if text:
@@ -59,7 +63,7 @@ def subimage_score_embedding(image, text):
 
     else:
         return None, None
-    
+anhnhung=[]   
 def blip2_one_pair(row_id, caption, image_id):
     image_inputs = processor(images=image, return_tensors="pt")
     image_input = model.get_image_features(**image_inputs).cuda(device)
@@ -70,6 +74,7 @@ def blip2_one_pair(row_id, caption, image_id):
         # original_text_embed =  text_input.float()
     #text_json = get_sentence_json(row_id, TEXT_JSON_PATH)
     object_images, key_map = create_sub_image_obj(row_id, image_id, IMAGE_PATH, TEXT_JSON_PATH, DENSE_CAPTION_PAYTH)
+    anhnhung.append(object_images)
     relation_images, relation_words = create_relation_object(object_images, text_json, image_id, key_map, IMAGE_PATH)
     if relation_images and relation_words:
         for relation_image, word in zip(relation_images, relation_words):
@@ -91,6 +96,9 @@ def blip2_one_pair(row_id, caption, image_id):
             image_input = model.get_image_features(**image_inputs).cuda(device)
             image_embeds = np.append(image_embed, image_input.cpu().numpy(), axis=0)
             image_scores.append(image_score)
+            # Save the image
+            save_image(sub_image, image_embed)  # Modify filename format as needed
+            print(f"Saved embedded image for key: {key} ")
     image_embed_dim = image_embeds.ndim
     index = faiss.IndexFlatL2(image_embed_dim)
     # Thêm tất cả các embedding vào index
@@ -120,6 +128,14 @@ if __name__ == "__main__":
             comclip_score[idx] = get_score(idx)
         except Exception as e:
             print(e)
+    for i in sub_image:
+        # Đọc ảnh
+        img = cv2.imread(i)
+        
+        # Hiển thị ảnh
+        cv2.imshow('Hình ảnh sub_image', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     top_1 = 0
     top_5 = 0
     for idx, value in comclip_score.items():
