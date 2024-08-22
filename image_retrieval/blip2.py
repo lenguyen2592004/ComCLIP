@@ -31,7 +31,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 preprocess= Blip2Processor.from_pretrained('Salesforce/blip2-opt-2.7b')
 model = Blip2Model.from_pretrained('Salesforce/blip2-opt-2.7b')
 model.eval()
-IMAGE_PATH = "./ComCLIP/datasets/L02_V001/0001" + "{}.jpg"
+IMAGE_PATH = "./ComCLIP/datasets/L02_V001/" + "{}.jpg"
 TEXT_JSON_PATH = "" + "/{}.json"
 DENSE_CAPTION_PAYTH = "" + "/{}.json"
 
@@ -121,15 +121,15 @@ if __name__ == "__main__":
             print("Anh thu {}:,".format(idx,comclip_score[idx]))
         except Exception as e:
             print(e)
-    # top_1 = 0
-    # top_5 = 0
-    # for idx, value in comclip_score.items():
-    #     candidates = list(value.keys())
-    #     candidates = [int(i) for i in candidates]
-    #     tp1=index.search(comclip_score,k=1)
-    #     tp5=index.search(comclip_score,k=5)
-    #     if int(idx) in tp1:
-    #         top_1+=1
-    #     if int(idx) in tp5:
-    #         top_5+=1
-    # print("Top 1 score: {}. Top 5 score: {}".format(top_1/ 1000, top_5/ 1000))
+    top_1 = 0
+    top_5 = 0
+    for idx, value in comclip_score.items():
+        candidates = list(value.keys())
+        candidates = [int(i) for i in candidates]
+        tp1=index.search(comclip_score,k=1)
+        tp5=index.search(comclip_score,k=5)
+        if int(idx) in tp1:
+            top_1+=1
+        if int(idx) in tp5:
+            top_5+=1
+    print("Top 1 score: {}. Top 5 score: {}".format(top_1/ 1000, top_5/ 1000))
