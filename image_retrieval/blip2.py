@@ -106,7 +106,7 @@ def blip2_one_pair(row_id, caption, image_id):
 
 def get_score(row_id):
     result = {}
-    row = data.iloc[row_id]
+    row = data[row_id]
     candidates = row.clip_top_ten_pick
     for candidate in candidates:
         result[candidate[0]] = blip2_one_pair(row_id, row.sentence, candidate[0]).item()
